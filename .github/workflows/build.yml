@@ -36,4 +36,4 @@ jobs:
       with:
         name: Build
         path: |
-          ModsBeforeFriday/target/release/*
+          ModsBeforeFriday/
