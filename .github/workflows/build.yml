@@ -28,6 +28,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Build
-        path: |
-          ModsBeforeFriday/mbf-agent/target/release/*
-          ModsBeforeFriday/mbf-res-man/target/release/*
+        path: ModsBeforeFriday/mbf-agent/target/release/*
