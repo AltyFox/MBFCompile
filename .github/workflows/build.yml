@@ -25,10 +25,15 @@ jobs:
         cd ModsBeforeFriday/mbf-agent
         cargo build --release
 
+    - name: Build mbf-res-man
+      run: |
+        cd ModsBeforeFriday/mbf-res-man
+        cargo build --release
+
     - name: Upload artifacts
       if: success()
       uses: actions/upload-artifact@v3
       with:
         name: Build
         path: |
-          ModsBeforeFriday/*
+          ModsBeforeFriday/target/release/*
