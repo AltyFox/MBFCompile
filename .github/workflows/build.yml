@@ -20,11 +20,6 @@ jobs:
         target: x86_64-unknown-linux-gnu
         override: true
 
-    - name: Build mbf-agent
-      run: |
-        cd ModsBeforeFriday/mbf-agent
-        cargo build --release
-
     - name: Build mbf-res-man
       run: |
         cd ModsBeforeFriday/mbf-res-man
