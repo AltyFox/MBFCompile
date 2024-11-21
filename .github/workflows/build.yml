@@ -14,9 +14,11 @@ jobs:
       run: git clone https://github.com/Lauriethefish/ModsBeforeFriday.git
 
     - name: Set up Rust
-      uses: moonrepo/setup-rust@v1
+      uses: actions-rs/toolchain@v1
       with:
-        rust-version: '1.77' # Specify the Rust version used in the project
+        toolchain: stable
+        target: x86_64-unknown-linux-gnu
+        override: true
 
     - name: Build mbf-agent
       run: |
@@ -28,4 +30,5 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Build
-        path: ModsBeforeFriday/mbf-agent/target/release/*
+        path: |
+          ModsBeforeFriday/mbf-agent/target/release/**
