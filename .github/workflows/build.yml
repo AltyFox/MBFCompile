@@ -10,26 +10,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout this repository
-      uses: actions/checkout@v3
-
     - name: Clone target repository
-      run: |
-        git clone https://github.com/Lauriethefish/ModsBeforeFriday.git
-        cd ModsBeforeFriday
+      run: git clone https://github.com/Lauriethefish/ModsBeforeFriday.git
 
     - name: Set up Rust
       uses: moonrepo/setup-rust@v1
       with:
         rust-version: '1.77' # Specify the Rust version used in the project
 
-    - name: Build project
+    - name: Build mbf-agent
       run: |
         cd ModsBeforeFriday/mbf-agent
         cargo build --release
 
-    - name: Get commit ID
-      run: echo ${{ github.sha }} > commit_id.txt
+    - name: Build mbf-res-man
+      run: |
+        cd ../mbf-res-man
+        cargo build --release
 
     - name: Upload artifact
       if: success()
@@ -38,42 +35,4 @@ jobs:
         name: Build
         path: |
           ModsBeforeFriday/mbf-agent/target/release/
-          commit_id.txt
-
-  check-commit:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout this repository
-      uses: actions/checkout@v3
-
-    - name: Clone target repository
-      run: |
-        git clone https://github.com/Lauriethefish/ModsBeforeFriday.git
-        cd ModsBeforeFriday
-
-    - name: Set up Rust
-      uses: moonrepo/setup-rust@v1
-      with:
-        rust-version: '1.77' # Specify the Rust version used in the project
-
-    - name: Download artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: Build
-        path: artifact/
-
-    - name: Read previous commit ID
-      id: read-commit-id
-      run: cat artifact/commit_id.txt
-
-    - name: Compare commit IDs and decide to build
-      run: |
-        cd ModsBeforeFriday
-        if [ "${{ github.sha }}" != "${{ steps.read-commit-id.outputs.commit_id }}" ]; then
-          echo "New commit detected. Rebuilding..."
-          cd mbf-agent
-          cargo build --release
-        else
-          echo "No new commit detected. Skipping build."
-        fi
+          ModsBeforeFriday/mbf-res-man/target/release/
