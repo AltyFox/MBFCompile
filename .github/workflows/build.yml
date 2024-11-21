@@ -31,4 +31,4 @@ jobs:
       with:
         name: Build
         path: |
-          ModsBeforeFriday/mbf-agent/target/release/**
+          ModsBeforeFriday/*
