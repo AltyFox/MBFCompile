@@ -1,0 +1,67 @@
+name: Build and Compile
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Runs every hour
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Rust
+      uses: actions/setup-rust@v1
+      with:
+        rust-version: '1.77' # Specify the Rust version used in the project
+
+    - name: Build project
+      run: |
+        cd ./mbf-agent
+        cargo build --release
+
+    - name: Get commit ID
+      run: echo ${{ github.sha }} > commit_id.txt
+
+    - name: Upload artifact
+      if: success()
+      uses: actions/upload-artifact@v2
+      with:
+        name: Build
+        path: |
+          ./mbf-agent/target/release/
+          commit_id.txt
+
+  check-commit:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Rust
+      uses: actions/setup-rust@v1
+      with:
+        rust-version: '1.77' # Specify the Rust version used in the project
+
+    - name: Download artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: Build
+        path: artifact/
+
+    - name: Read previous commit ID
+      id: read-commit-id
+      run: cat artifact/commit_id.txt
+
+    - name: Compare commit IDs and decide to build
+      run: |
+        if [ "${{ github.sha }}" != "${{ steps.read-commit-id.outputs.commit_id }}" ]; then
+          echo "New commit detected. Rebuilding..."
+          cd ./mbf-agent
+          cargo build --release
+        else
+          echo "No new commit detected. Skipping build."
+        fi
