@@ -12,8 +12,12 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout the repository
       uses: actions/checkout@v2
+      with:
+        repository: Lauriethefish/ModsBeforeFriday
+        token: ${{ secrets.GITHUB_TOKEN }}
+        ref: main
 
     - name: Set up Rust
       uses: actions-rs/toolchain@v1
