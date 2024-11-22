@@ -1,33 +1,24 @@
-name: Build and Compile
+name: Compile mbf-res-man
 
 on:
   schedule:
-    - cron: '0 * * * *' # Runs every hour
-  workflow_dispatch: # Allows manual trigger
+    - cron: '0 * * * *'
+  push:
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-    - name: Clone target repository
-      run: git clone https://github.com/Lauriethefish/ModsBeforeFriday.git
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
     - name: Set up Rust
       uses: actions-rs/toolchain@v1
       with:
-        profile: minimal
         toolchain: stable
-        override: true
 
-    - name: Build mbf-res-man
-      run: |
-        cd ModsBeforeFriday/mbf-res-man
-        cargo build --release
-
-    - name: Upload artifacts
-      if: success()
-      uses: actions/upload-artifact@v3
-      with:
-        name: Build
-        path: ModsBeforeFriday/
+    - name: Install dependencies and compile
+      run: cargo build --release
