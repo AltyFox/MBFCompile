@@ -25,7 +25,7 @@ jobs:
         toolchain: stable
 
     - name: Install dependencies and compile
-      run: cargo build --release
+      run: cargo build --release --features build-binary
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
